@@ -3,6 +3,7 @@ pyproject.toml
 isp_truth_tester/__init__.py
 isp_truth_tester/__main__.py
 isp_truth_tester/cli.py
+isp_truth_tester/display.py
 isp_truth_tester/models.py
 isp_truth_tester/ping_test.py
 isp_truth_tester/report.py

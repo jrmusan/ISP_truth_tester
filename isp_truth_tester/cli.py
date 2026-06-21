@@ -106,9 +106,6 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
 
-        if args.verbose:
-            print(f"Data saved: {json_path}", file=sys.stderr)
-            print(f"Report:     {report_path}", file=sys.stderr)
         return 0
 
     if args.command == "report":

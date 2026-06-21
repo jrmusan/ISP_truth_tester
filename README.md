@@ -42,6 +42,8 @@ isp-truth-tester run --duration 8 \
 
 # Show progress while running
 isp-truth-tester run --duration 1 --verbose
+# Prints a live log every ping round (~30s) and every 10s between pings:
+# current + average latency per target, latest + average download/upload, time remaining
 
 # Regenerate HTML from saved JSON
 isp-truth-tester report results/session_20250621_120000.json
