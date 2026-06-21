@@ -1,0 +1,107 @@
+Metadata-Version: 2.4
+Name: isp-truth-tester
+Version: 1.0.0
+Summary: Monitor internet speed and latency over time on a Raspberry Pi
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: speedtest-cli>=2.1.3
+
+# ISP Truth Tester
+
+A small Python tool for Raspberry Pi (or any Linux box) that monitors your internet connection over time. It runs **ping tests** frequently and **speed tests** periodically, logs everything to text and JSON, and produces a self-contained HTML report with min / avg / max stats and charts.
+
+## Features
+
+- Configurable session length (**1–24 hours**)
+- Ping latency checks every 30 seconds (configurable)
+- Speed tests every 10 minutes (configurable) via [speedtest-cli](https://github.com/sivel/speedtest-cli)
+- Text log + JSON data + HTML dashboard
+- **Graceful shutdown** — press `Ctrl+C` or send `SIGTERM` and all collected data is saved and the report is generated
+- Exits silently when finished (use `--verbose` for progress messages)
+
+## Quick start (Raspberry Pi)
+
+```bash
+# Clone and install
+cd ISP_truth_tester
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# Run a 2-hour monitoring session
+isp-truth-tester run --duration 2
+
+# Open the report (path printed with --verbose, or look in results/)
+# results/session_YYYYMMDD_HHMMSS_report.html
+```
+
+## Usage
+
+```bash
+# Required: how long to run (1–24 hours)
+isp-truth-tester run --duration 4
+
+# Customize intervals and targets
+isp-truth-tester run --duration 8 \
+  --ping-interval 30 \
+  --speed-interval 600 \
+  --targets 1.1.1.1 8.8.8.8 \
+  --output-dir ./results
+
+# Show progress while running
+isp-truth-tester run --duration 1 --verbose
+
+# Regenerate HTML from saved JSON
+isp-truth-tester report results/session_20250621_120000.json
+```
+
+You can also run it as a module:
+
+```bash
+python -m isp_truth_tester run --duration 2
+```
+
+## Output files
+
+Each session creates three files in the output directory:
+
+| File | Description |
+|------|-------------|
+| `session_*.log` | Human-readable text log |
+| `session_*.json` | Structured data (for re-reporting or analysis) |
+| `session_*_report.html` | Dashboard with stats and charts — open in any browser |
+
+## Stopping early
+
+If you cancel mid-run (`Ctrl+C`, `kill`, etc.), the tool saves all data collected so far and still writes the HTML report. The report will show **Stopped early** instead of **Completed**.
+
+## Requirements
+
+- Python 3.10+
+- `ping` available on PATH (standard on Raspberry Pi OS)
+- Network access for speed tests
+
+## systemd example (optional)
+
+Run an 8-hour session on boot:
+
+```ini
+[Unit]
+Description=ISP Truth Tester
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/ISP_truth_tester
+ExecStart=/home/pi/ISP_truth_tester/.venv/bin/isp-truth-tester run --duration 8
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## License
+
+MIT

@@ -1,0 +1,2 @@
+[console_scripts]
+isp-truth-tester = isp_truth_tester.cli:main
