@@ -53,6 +53,34 @@ You can also run it as a module:
 python -m isp_truth_tester run --duration 2
 ```
 
+## Running in tmux (recommended for SSH)
+
+Long sessions (hours) should run inside **tmux** so they keep going if your SSH connection drops. Create a session named `scanner`:
+
+```bash
+tmux new -s scanner
+```
+
+Inside the tmux window:
+
+```bash
+cd ISP_truth_tester
+source .venv/bin/activate
+isp-truth-tester run --duration 8 --verbose
+```
+
+Detach and leave it running: press `Ctrl+b`, then `d`.
+
+Later, reattach to check progress or stop early:
+
+```bash
+tmux attach -t scanner
+```
+
+To stop the scan gracefully (saves data and writes the report), reattach and press `Ctrl+C`.
+
+List sessions: `tmux ls`. Kill the session when done: `tmux kill-session -t scanner`.
+
 ## Output files
 
 Each session creates three files in the output directory:
